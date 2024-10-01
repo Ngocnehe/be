@@ -26,3 +26,23 @@
 
 - Thư viện:
   - bcrypt: mã hóa mật khẩu
+
+- 
+  - page: trang
+  - limit: số lượng
+  - sort: sắp xếp
+  - keyword: tìm kiếm
+
+- @: anotation
+
+- ? if
+- : else
+
+- 200: Thành công
+- 201: Đã tạo
+- 400: Không hợp lệ
+- 404: Không tìm thấy
+- 403: Quyền không được truy cập
+- 401: Không xác thực
+- 422: ...không tồn tại
+- 500: lỗi không xác định
