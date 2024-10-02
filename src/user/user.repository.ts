@@ -38,9 +38,7 @@ export class UserRepository {
   }
 
   async updateUser(id: string, updateUser: UpdateUserDto) {
-    return await this.model.findOneAndUpdate({ _id: id }, updateUser, {
-      new: true,
-    });
+    return await this.model.findOneAndUpdate({ _id: id }, updateUser, {new: true,}).lean<User>(true);
   }
 
   async deleteUser(id: string) {
@@ -52,7 +50,7 @@ export class UserRepository {
       { _id: id },
       { status: status },
       { new: true },
-    );
+    ).lean<User>(true);
   }
 
   async findByEmail(email: string) {

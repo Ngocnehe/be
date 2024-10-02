@@ -1,3 +1,4 @@
+import { TokenPayloadDto } from './dto/token-payload.dto';
 import {
   Injectable,
   NotFoundException,
@@ -7,6 +8,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Role } from './decorator/role.enum';
 @Injectable()
 export class AuthService {
   constructor(
@@ -31,10 +33,11 @@ export class AuthService {
       throw new UnauthorizedException('Sai mật khẩu');
     }
 
-    const body = {
-      _id: user._id,
+    const body: TokenPayloadDto = {
+      _id: user._id.toHexString(),
       email: user.email,
       name: user.name,
+      role: user.role,
     };
 
     return this.jwtService.signAsync(body);

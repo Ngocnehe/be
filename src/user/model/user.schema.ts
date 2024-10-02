@@ -1,4 +1,4 @@
-import { Role } from './../../auth/dto/role.enum';
+import { Role } from '../../auth/decorator/role.enum';
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { SchemaTypes, Types } from "mongoose";
 
