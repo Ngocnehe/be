@@ -28,6 +28,7 @@ export class UserRepository {
     sort: 'asc' | 'desc',
     keyword: any,
   ) {
+    //Phân trang
     return await this.model
       .find(keyword)
       .skip((page - 1) * limit)
@@ -38,19 +39,22 @@ export class UserRepository {
   }
 
   async updateUser(id: string, updateUser: UpdateUserDto) {
-    return await this.model.findOneAndUpdate({ _id: id }, updateUser, {new: true,}).lean<User>(true);
+    return await this.model
+      .findOneAndUpdate({ _id: id }, updateUser, { new: true })
+      .lean<User>(true);
   }
 
   async deleteUser(id: string) {
-    return await this.model.findByIdAndDelete({ _id: id });
+    return await this.model
+      .findByIdAndDelete({ _id: id })
+      .lean<User>(true)
+      .lean<User>(true);
   }
 
   async updateStatusUser(id: string, status: boolean) {
-    return await this.model.findOneAndUpdate(
-      { _id: id },
-      { status: status },
-      { new: true },
-    ).lean<User>(true);
+    return await this.model
+      .findOneAndUpdate({ _id: id }, { status: status }, { new: true })
+      .lean<User>(true);
   }
 
   async findByEmail(email: string) {

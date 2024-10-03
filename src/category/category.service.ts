@@ -1,3 +1,4 @@
+import { Category } from './model/category.schema';
 import {
   Injectable,
   NotFoundException,
@@ -50,12 +51,17 @@ export class CategoryService {
     return category;
   }
 
+  // Xoa theo id khong co danh mục con
   async deleteById(id: string) {
-    const category = await this.repository.deleteOne(id);
+    const category = await this.findById(id);
 
-    if (!category) {
-      throw new NotFoundException('không tìm thấy danh mục');
+    if (category.children.length > 0) {
+      throw new UnprocessableEntityException(
+        'Category này vẫn còn danh mục con',
+      );
     }
+
+    await this.repository.deleteOne(category._id.toHexString());
 
     return category;
   }
@@ -80,17 +86,18 @@ export class CategoryService {
     if (!idValid) {
       throw new UnprocessableEntityException('id khong hop le');
     }
-    const category = await this.repository.updateOne(id, {
+
+    const category = await this.findById(id);
+    if (category.children.length > 0) {
+      throw new UnprocessableEntityException(
+        'Danh muc co danh muc con, không thể thay đổi lại',
+      );
+    }
+    return await this.repository.updateOne(id, category, {
       name,
       status,
       parent_id: checkParent,
     });
-
-    if (!category) {
-      throw new NotFoundException('không tìm thấy danh mục');
-    }
-
-    return category;
   }
 
   async updateStatusById(id: string, status: boolean) {

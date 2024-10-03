@@ -18,31 +18,31 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() category: CreateCategoryDto) {
     return this.service.createCategory(category);
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.service.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Get(':id')
   getOne(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Delete(':id')
   deleteOne(@Param('id') id: string) {
     return this.service.deleteById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Put(':id')
   updateOne(@Param('id') id: string, @Body() category: UpdateCategoryDto) {
     return this.service.updateById(id, category);
