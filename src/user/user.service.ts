@@ -1,5 +1,4 @@
 import { UserRepository } from './user.repository';
-import { User } from './model/user.schema';
 import {
   Injectable,
   NotFoundException,

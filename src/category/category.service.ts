@@ -1,4 +1,3 @@
-import { Category } from './model/category.schema';
 import {
   Injectable,
   NotFoundException,
@@ -8,6 +7,7 @@ import { CategoryRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Types } from 'mongoose';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ParamPaginationDto } from 'src/user/dto/param-pagination.dto';
 
 @Injectable()
 export class CategoryService {
@@ -38,8 +38,22 @@ export class CategoryService {
       throw new UnprocessableEntityException(error.message);
     }
   }
-  findAll() {
-    return this.repository.findAll();
+  // findAll() {
+  //   return this.repository.findAll();
+  // }
+
+  //test tìm tất cả category và phân trang
+  findAll(param: ParamPaginationDto) {
+    const { page, limit, sort, keyword } = param;
+
+    const newSort = sort != 'asc' ? 'desc' : 'asc';
+    const filter =
+      keyword !== undefined
+        ? {
+            $or: [{ name: new RegExp(keyword, 'i') }],
+          }
+        : {};
+    return this.repository.findAll(page, limit, newSort, filter);
   }
 
   async findById(id: string) {

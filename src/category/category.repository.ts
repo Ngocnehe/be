@@ -44,17 +44,33 @@ export class CategoryRepository {
       .lean<Category>(true);
   }
 
-  async findAll() {
+  // async findAll() {
+  //   return await this.model
+  //     .find({ parent_id: null })
+  //     .populate({
+  //       path: 'children',
+  //       populate: {
+  //         path: 'children',
+  //         populate: { path: 'children', populate: { path: 'children' } },
+  //       },
+  //     })
+  //     .lean<Category>(true);
+  // }
+
+  //test tìm tất cả category và phân trang
+  async findAll(
+    page: number,
+    limit: number,
+    sort: 'asc' | 'desc',
+    keyword: any,
+  ) {
     return await this.model
-      .find({ parent_id: null })
-      .populate({
-        path: 'children',
-        populate: {
-          path: 'children',
-          populate: { path: 'children', populate: { path: 'children' } },
-        },
-      })
-      .lean<Category>(true);
+      .find(keyword)
+      .skip((page - 1) * limit)
+      .sort({ name: sort })
+      .limit(limit)
+      .select('-parent_id -children')
+      .lean<Category[]>(true);
   }
 
   async deleteOne(id: string) {
