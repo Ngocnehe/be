@@ -12,13 +12,14 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { query } from 'express';
-import { ParamPaginationDto } from './dto/param-pagination.dto';
+import { ParamPaginationDto } from '../common/param-pagination.dto';
 import { User } from './model/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { Roles } from 'src/auth/decorator/role-decorator';
 import { Role } from 'src/auth/decorator/role.enum';
 import { RoleAuthGuard } from 'src/auth/guard/role-jwt.guard';
+import { buildPagination } from 'src/common/common';
 
 @Controller('users')
 export class UserController {
@@ -38,7 +39,7 @@ export class UserController {
   @Get()
   async getAllUsers(@Query() page: ParamPaginationDto) {
     const listUsers = await this.service.getAll(page);
-    return this.buildPagination(listUsers, page);
+    return buildPagination<User>(listUsers, page);
   }
 
   //Cap nhap User
@@ -72,15 +73,5 @@ export class UserController {
   @Put(':id/status')
   updateStatusUser(@Param('id') _id: string, @Query('status') status: boolean) {
     return this.service.updateStatusUser(_id, status);
-  }
-
-  private buildPagination(listUsers: User[], param: ParamPaginationDto) {
-    const { page, limit } = param;
-    return {
-      total_items: listUsers.length,
-      total_pages: Math.ceil(listUsers.length / limit),
-      current_page: parseInt(String(page)),
-      entities: listUsers,
-    };
   }
 }

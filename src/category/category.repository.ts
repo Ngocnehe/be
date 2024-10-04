@@ -44,20 +44,6 @@ export class CategoryRepository {
       .lean<Category>(true);
   }
 
-  // async findAll() {
-  //   return await this.model
-  //     .find({ parent_id: null })
-  //     .populate({
-  //       path: 'children',
-  //       populate: {
-  //         path: 'children',
-  //         populate: { path: 'children', populate: { path: 'children' } },
-  //       },
-  //     })
-  //     .lean<Category>(true);
-  // }
-
-  //test tìm tất cả category và phân trang
   async findAll(
     page: number,
     limit: number,
@@ -65,11 +51,17 @@ export class CategoryRepository {
     keyword: any,
   ) {
     return await this.model
-      .find(keyword)
+      .find(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {})
       .skip((page - 1) * limit)
       .sort({ name: sort })
       .limit(limit)
-      .select('-parent_id -children')
+      .populate({
+        path: 'children',
+        populate: {
+          path: 'children',
+          populate: { path: 'children', populate: { path: 'children' } },
+        },
+      })
       .lean<Category[]>(true);
   }
 

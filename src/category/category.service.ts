@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { CategoryRepository } from './category.repository';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { Types } from 'mongoose';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ParamPaginationDto } from 'src/user/dto/param-pagination.dto';
+import { ParamPaginationDto } from 'src/common/param-pagination.dto';
+import { checkValisIsObject } from 'src/common/common';
 
 @Injectable()
 export class CategoryService {
@@ -19,10 +19,7 @@ export class CategoryService {
 
     try {
       if (parent_id !== '') {
-        const idValid = Types.ObjectId.isValid(parent_id);
-        if (!idValid) {
-          throw new UnprocessableEntityException('parent_id khong hop le');
-        }
+        checkValisIsObject(parent_id, 'parent_id');
 
         const parent = await this.repository.findOne(parent_id);
         if (!parent) {
@@ -38,22 +35,13 @@ export class CategoryService {
       throw new UnprocessableEntityException(error.message);
     }
   }
-  // findAll() {
-  //   return this.repository.findAll();
-  // }
 
-  //test tìm tất cả category và phân trang
   findAll(param: ParamPaginationDto) {
     const { page, limit, sort, keyword } = param;
 
     const newSort = sort != 'asc' ? 'desc' : 'asc';
-    const filter =
-      keyword !== undefined
-        ? {
-            $or: [{ name: new RegExp(keyword, 'i') }],
-          }
-        : {};
-    return this.repository.findAll(page, limit, newSort, filter);
+
+    return this.repository.findAll(page, limit, newSort, keyword);
   }
 
   async findById(id: string) {
@@ -85,10 +73,7 @@ export class CategoryService {
     const checkParent = parent_id !== '' ? parent_id : null;
 
     if (parent_id !== '') {
-      const idValid = Types.ObjectId.isValid(parent_id);
-      if (!idValid) {
-        throw new UnprocessableEntityException('parent_id khong hop le');
-      }
+      checkValisIsObject(parent_id, 'parent_id');
 
       const parent = await this.repository.findOne(parent_id);
       if (!parent) {
@@ -96,10 +81,7 @@ export class CategoryService {
       }
     }
 
-    const idValid = Types.ObjectId.isValid(id);
-    if (!idValid) {
-      throw new UnprocessableEntityException('id khong hop le');
-    }
+    checkValisIsObject(id, 'category id');
 
     const category = await this.findById(id);
     if (category.children.length > 0) {
@@ -115,10 +97,8 @@ export class CategoryService {
   }
 
   async updateStatusById(id: string, status: boolean) {
-    const idValid = Types.ObjectId.isValid(id);
-    if (!idValid) {
-      throw new UnprocessableEntityException('id này khong hop le');
-    }
+    checkValisIsObject(id, 'category id');
+    checkValisIsObject(id, 'parent_id');
 
     const category = await this.repository.updateStatusById(id, status);
     if (!category) {

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
-import { ParamPaginationDto } from './dto/param-pagination.dto';
+import { ParamPaginationDto } from '../common/param-pagination.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
