@@ -26,7 +26,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   //Tao User
-  //@UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
@@ -34,7 +34,7 @@ export class UserController {
   }
 
   //Lay User, tim kiem
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN)
   @Get()
   async getAllUsers(@Query() page: ParamPaginationDto) {
