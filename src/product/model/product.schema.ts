@@ -47,6 +47,12 @@ export class Product {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Category' })
   category_id: Types.ObjectId;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Author' })
+  author_id: Types.ObjectId;
+
+  @Prop({ type: String, default: '' })
+  publisher?: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

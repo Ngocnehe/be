@@ -24,6 +24,11 @@ import { Roles } from 'src/auth/decorator/role-decorator';
 export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
+  @Get('/all')
+  getAllGetName() {
+    return this.service.findAllGetName();
+  }
+
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Post()

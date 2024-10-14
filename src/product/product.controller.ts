@@ -20,6 +20,7 @@ import {
 } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import {
+  buildPagination,
   checkExtraFiles,
   checkFileImage,
   checkMainFile,
@@ -98,8 +99,10 @@ export class ProductController {
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Get()
-  getAll(@Query() params: ParamPaginationDto) {
-    return this.productService.findAll(params);
+  async getAll(@Query() params: ParamPaginationDto) {
+    const products = await this.productService.findAll(params);
+
+    return buildPagination(products, params);
   }
 
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
@@ -110,7 +113,8 @@ export class ProductController {
 
     await this.cloudinaryService.deleteById(`products/${product._id}`);
     await this.cloudinaryService.deleteFolder(`products/${product._id}`);
-    return 'Đã xóa product thành công';
+
+    return id;
   }
 
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
@@ -150,7 +154,7 @@ export class ProductController {
       image_url: result.url,
     });
 
-    return newProduct;
+    return id;
   }
 
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
@@ -171,7 +175,7 @@ export class ProductController {
       this.cloudinaryService.deleteImage(image);
     });
     await this.productService.deleteExtraImages(id, image_ids);
-    return 'Xoá ảnh phụ thành công!';
+    return id;
   }
 
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
@@ -188,19 +192,20 @@ export class ProductController {
     checkExtraFiles(files.extra_images);
     if (!files.extra_images) {
       throw new BadRequestException('Không nhận được file!');
-    } else {
-      files.extra_images.forEach((file) => {
-        this.cloudinaryService
-          .uploadFile(file, 'products/' + id)
-          .then((result) => {
-            this.productService.uploadExtraImages(new Types.ObjectId(id), {
-              image_id: result.public_id,
-              image_url: result.url,
-            });
-          });
-      });
     }
+    const uploadPromises = files.extra_images.map(async (file) => {
+      const result = await this.cloudinaryService.uploadFile(
+        file,
+        'products/' + id,
+      );
+      this.productService.uploadExtraImages(new Types.ObjectId(id), {
+        image_id: result.public_id,
+        image_url: result.url,
+      });
+    });
 
-    return 'Đã ảnh phụ cho product này';
+    await Promise.all(uploadPromises);
+
+    return id;
   }
 }

@@ -54,6 +54,7 @@ export class ProductRepository {
       .sort({ name: sort })
       .limit(limit)
       .populate('category_id')
+      .populate('author_id')
       .lean<Product[]>(true);
   }
 

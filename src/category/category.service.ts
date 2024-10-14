@@ -72,28 +72,37 @@ export class CategoryService {
     const { name, status, parent_id } = categoryUpdate;
     const checkParent = parent_id !== '' ? parent_id : null;
 
-    if (parent_id !== '') {
-      checkValisIsObject(parent_id, 'parent_id');
-
-      const parent = await this.repository.findOne(parent_id);
-      if (!parent) {
-        throw new NotFoundException('Không tìm thấy category id');
-      }
-    }
-
-    checkValisIsObject(id, 'category id');
-
     const category = await this.findById(id);
-    if (category.children.length > 0) {
-      throw new UnprocessableEntityException(
-        'Danh muc co danh muc con, không thể thay đổi lại',
-      );
+
+    try {
+      if (parent_id !== '') {
+        checkValisIsObject(parent_id, 'parent_id');
+
+        if (
+          category.parent_id &&
+          parent_id !== category.parent_id.toHexString()
+        ) {
+          const parent = await this.repository.findOne(parent_id);
+          if (!parent) {
+            throw new NotFoundException('Không tìm thấy category id');
+          }
+        }
+      }
+
+      if (category.children.length > 0) {
+        throw new UnprocessableEntityException(
+          'Danh muc co danh muc con, không thể thay đổi lại',
+        );
+      }
+
+      return await this.repository.updateOne(id, category, {
+        name,
+        status,
+        parent_id: checkParent,
+      });
+    } catch (error) {
+      throw new UnprocessableEntityException('Tên đã tồn tại');
     }
-    return await this.repository.updateOne(id, category, {
-      name,
-      status,
-      parent_id: checkParent,
-    });
   }
 
   async updateStatusById(id: string, status: boolean) {
@@ -106,5 +115,9 @@ export class CategoryService {
     }
 
     return category;
+  }
+
+  async findAllGetName() {
+    return await this.repository.findAllGetName();
   }
 }

@@ -6,6 +6,10 @@ import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CustomerModule } from './customer/customer.module';
+import { AuthorModule } from './author/author.module';
+import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -16,6 +20,10 @@ import { CustomerModule } from './customer/customer.module';
     ProductModule,
     CloudinaryModule,
     CustomerModule,
+    AuthorModule,
+    CartModule,
+    OrderModule,
+    CheckoutModule,
   ],
 })
 export class AppModule {}

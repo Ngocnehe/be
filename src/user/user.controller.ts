@@ -7,11 +7,11 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { query } from 'express';
 import { ParamPaginationDto } from '../common/param-pagination.dto';
 import { User } from './model/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -25,6 +25,13 @@ import { buildPagination } from 'src/common/common';
 export class UserController {
   constructor(private readonly service: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMe(@Request() req) {
+    const { _id } = req.user;
+    return this.service.getOne(_id);
+  }
+
   //Tao User
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
@@ -34,7 +41,7 @@ export class UserController {
   }
 
   //Lay User, tim kiem
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Get()
   async getAllUsers(@Query() page: ParamPaginationDto) {
@@ -43,7 +50,7 @@ export class UserController {
   }
 
   //Cap nhap User
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Put(':id')
   updateUser(@Param('id') _id: string, @Body() updateUser: UpdateUserDto) {
@@ -51,7 +58,7 @@ export class UserController {
   }
 
   //Xoa User
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Delete(':id')
   async deleteUser(@Param('id') _id: string) {
@@ -60,7 +67,7 @@ export class UserController {
   }
 
   //Lay 1 User theo id
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Get(':id')
   getUserById(@Param('id') _id: string) {
@@ -68,7 +75,7 @@ export class UserController {
   }
 
   //Cap nhap trang thai User theo id
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN)
   @Put(':id/status')
   updateStatusUser(@Param('id') _id: string, @Query('status') status: boolean) {

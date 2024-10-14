@@ -18,4 +18,8 @@ export class CreateProductDto {
   status: boolean;
 
   category_id: string;
+
+  author_id: string;
+
+  publisher: string;
 }

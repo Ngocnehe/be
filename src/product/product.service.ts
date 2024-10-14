@@ -22,9 +22,11 @@ export class ProductService {
   ) {}
 
   async createProduct(createProduct: CreateProductDto) {
-    let { category_id, ...data } = createProduct;
+    console.log(createProduct);
+    let { category_id, author_id, ...data } = createProduct;
 
     checkValisIsObject(category_id, 'category_id');
+    checkValisIsObject(author_id, 'author_id');
 
     const category = await this.categoryRepository.findOne(category_id);
 
@@ -34,7 +36,8 @@ export class ProductService {
 
     const product = {
       _id: new Types.ObjectId(),
-      category_id: Types.ObjectId.createFromHexString(category_id),
+      category_id: new Types.ObjectId(category_id),
+      author_id: new Types.ObjectId(author_id),
       ...data,
     };
 
@@ -90,7 +93,7 @@ export class ProductService {
     checkValisIsObject(id, 'product id');
     checkValisIsObject(updateProduct.category_id, 'category_id');
 
-    const { category_id, ...data } = updateProduct;
+    const { category_id, author_id, ...data } = updateProduct;
 
     const category = await this.categoryRepository.findOne(category_id);
 
@@ -101,6 +104,7 @@ export class ProductService {
     const product = await this.productRepository.updateOne(id, {
       _id: new Types.ObjectId(id),
       category_id: new Types.ObjectId(category_id),
+      author_id: new Types.ObjectId(author_id),
       ...data,
     });
     if (!product) {

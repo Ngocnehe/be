@@ -13,7 +13,7 @@ export class Category {
   status: boolean;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Category', required: false })
-  parent_id?: Category;
+  parent_id?: Types.ObjectId;
 
   @Prop({ type: [SchemaTypes.ObjectId], ref: 'Category', required: false })
   children?: Types.ObjectId[];
