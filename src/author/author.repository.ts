@@ -42,4 +42,8 @@ export class AuthorRepository {
       .findOneAndUpdate({ _id: id }, product, { new: true })
       .lean<Author>(true);
   }
+
+  async findAllName() {
+    return await this.model.find().lean<Author[]>(true);
+  }
 }

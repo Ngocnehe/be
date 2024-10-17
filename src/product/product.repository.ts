@@ -71,4 +71,10 @@ export class ProductRepository {
   async findOne(id: string) {
     return await this.model.findOne({ _id: id }).lean<Product>(true);
   }
+
+  async updateStock(id: Types.ObjectId, stock: number) {
+    return await this.model
+      .findOneAndUpdate({ _id: id }, { $inc: { stock } }, { new: true })
+      .lean<Product>(true);
+  }
 }

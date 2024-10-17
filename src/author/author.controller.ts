@@ -23,6 +23,11 @@ import { UpdateAuthorDto } from './dto/update-author.dto';
 export class AuthorController {
   constructor(private readonly service: AuthorService) {}
 
+  @Get('all')
+  getAllName() {
+    return this.service.findAllName();
+  }
+
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Post()

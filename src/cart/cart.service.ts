@@ -57,4 +57,8 @@ export class CartService {
       product_id,
     );
   }
+
+  async deleteCartCustomer(customer_id: string) {
+    return await this.repository.deleteByCustomer(customer_id);
+  }
 }

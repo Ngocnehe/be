@@ -33,6 +33,9 @@ export class Order {
 
   @Prop({ type: [Types.ObjectId], ref: OrderDetail.name })
   order_detail: Types.ObjectId[];
+
+  @Prop({ type: Date, default: Date.now() })
+  created_at?: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

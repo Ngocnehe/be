@@ -43,4 +43,8 @@ export class CartRepository {
       .findOneAndDelete({ customer_id, product_id })
       .lean<Cart>(true);
   }
+
+  async deleteByCustomer(customer_id: string) {
+    return await this.model.deleteMany({ customer_id }).lean<Cart>(true);
+  }
 }

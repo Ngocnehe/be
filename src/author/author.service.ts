@@ -62,4 +62,8 @@ export class AuthorService {
 
     return updateAuthor;
   }
+
+  async findAllName() {
+    return await this.repository.findAllName();
+  }
 }

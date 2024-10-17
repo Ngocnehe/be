@@ -121,6 +121,7 @@ export class ProductController {
   @Roles(Role.ADMIN, Role.USER)
   @Put(':id')
   update(@Param('id') id: string, @Body() product: UpdateProductDto) {
+    console.log('product', product);
     return this.productService.updateById(id, product);
   }
 
