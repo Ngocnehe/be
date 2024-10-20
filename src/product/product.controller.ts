@@ -41,6 +41,11 @@ export class ProductController {
     private readonly productService: ProductService,
   ) {}
 
+  @Get('/c/:id')
+  async getProductByCategory(@Param('id') id: string) {
+    return this.productService.findByCategory(id);
+  }
+
   @UseGuards(JwtAuthGuard, RoleAuthGuard)
   @Roles(Role.ADMIN, Role.USER)
   @Post()
@@ -112,7 +117,6 @@ export class ProductController {
     const product = await this.productService.deleteById(id);
 
     await this.cloudinaryService.deleteById(`products/${product._id}`);
-    await this.cloudinaryService.deleteFolder(`products/${product._id}`);
 
     return id;
   }
@@ -158,8 +162,6 @@ export class ProductController {
     return id;
   }
 
-  @UseGuards(JwtAuthGuard, RoleAuthGuard)
-  @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
   getOne(@Param('id') id: string) {
     return this.productService.findById(id);
@@ -208,5 +210,12 @@ export class ProductController {
     await Promise.all(uploadPromises);
 
     return id;
+  }
+
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  @Put(':id/status')
+  updateStatus(@Param('id') id: string, @Query('status') status: boolean) {
+    return this.productService.updateStatus(id, status);
   }
 }

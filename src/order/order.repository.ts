@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './model/order.schema';
 import { OrderDetail } from './model/order-detail.schema';
-import { Customer } from 'src/customer/model/customer.schema';
 
 @Injectable()
 export class OrderRepository {
@@ -23,9 +22,12 @@ export class OrderRepository {
 
     return await this.orderModel
       .findOne({ _id: newOrder._id })
-      .populate<{
-        customer_id: Customer;
-      }>('customer_id')
+      .populate({
+        path: 'order_detail',
+        populate: {
+          path: 'product_id',
+        },
+      })
       .lean<Order>(true);
   }
 
@@ -56,11 +58,23 @@ export class OrderRepository {
   async findOne(id: string) {
     return await this.orderModel
       .findOne({ _id: id })
-      .populate('order_detail')
+      .populate({
+        path: 'order_detail',
+        populate: {
+          path: 'product_id',
+        },
+      })
       .lean<Order>(true);
   }
 
   async findByCustomer(customer_id: string) {
     return await this.orderModel.find({ customer_id }).lean<Order[]>(true);
+  }
+
+  async getLastOptionDays(startDate: Date, endDate: Date) {
+    return await this.orderModel
+      .find({ created_at: { $gte: startDate, $lt: endDate } })
+      .sort({ created_at: 1 }) // Sắp xếp theo ngày giao hàng tăng dần
+      .lean<Order[]>(true);
   }
 }

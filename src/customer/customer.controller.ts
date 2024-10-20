@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Roles } from 'src/auth/decorator/role-decorator';
 import { Role } from 'src/auth/decorator/role.enum';
+import { RoleAuthGuard } from 'src/auth/guard/role-jwt.guard';
 
 @Controller('customers')
 export class CustomerController {
@@ -73,5 +74,25 @@ export class CustomerController {
       changePassword.old_password,
       changePassword.new_password,
     );
+  }
+
+  @Post('forgot_password')
+  forgotPassword(@Body('email') email: string) {
+    return this.customerService.forgotPassword(email);
+  }
+
+  @Post('reset_password')
+  resetPassswordToken(
+    @Body('token') token: string,
+    @Body('password') password: string,
+  ) {
+    return this.customerService.resetPassswordToken(token, password);
+  }
+
+  @UseGuards(JwtAuthGuard, RoleAuthGuard)
+  @Roles(Role.ADMIN, Role.USER)
+  @Put(':id/status')
+  updateStatus(@Param('id') id: string, @Query('status') status: boolean) {
+    return this.customerService.updateStatus(id, status);
   }
 }

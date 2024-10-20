@@ -26,4 +26,16 @@ export class MailService {
       },
     });
   }
+
+  async forgotPassword(email: string, url: string) {
+    await this.mailerService.sendMail({
+      to: email, // list of receivers
+      from: 'daothanhnghi9a4@gmail.com', // sender address
+      subject: 'Thay đổi mật khẩu của bạn', // Subject line
+      template: 'forgot-password', // plaintext body
+      context: {
+        url: url,
+      },
+    });
+  }
 }

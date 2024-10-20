@@ -36,8 +36,6 @@ export class CategoryController {
     return this.service.createCategory(category);
   }
 
-  @UseGuards(JwtAuthGuard, RoleAuthGuard)
-  @Roles(Role.ADMIN, Role.USER)
   @Get()
   async getAll(@Query() params: ParamPaginationDto) {
     const categories = await this.service.findAll(params);

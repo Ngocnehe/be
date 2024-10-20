@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   OnModuleInit,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -43,11 +44,11 @@ export class UserService implements OnModuleInit {
   }
 
   async getOne(id: string) {
-    try {
-      return await this.repository.findOne(id, '-password');
-    } catch (error) {
-      throw new NotFoundException('Không tìm thấy user');
+    const user = await this.repository.findOne(id, '-password');
+    if (!user) {
+      throw new UnauthorizedException('Không tìm thấy user');
     }
+    return user;
   }
 
   async updateUser(id: string, updateUser: UpdateUserDto) {
