@@ -17,3 +17,4 @@ export class UpdateCustomerDto {
   @IsBoolean()
   status: boolean;
 }
+/*kieu du lieu dau vao*/

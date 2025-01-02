@@ -44,6 +44,27 @@ export class CategoryRepository {
       .lean<Category>(true);
   }
 
+  // async findAll(
+  //   page: number,
+  //   limit: number,
+  //   sort: 'asc' | 'desc',
+  //   keyword: any,
+  // ) {
+  //   return await this.model
+  //     .find(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {})
+  //     .skip((page - 1) * limit)
+  //     .sort({ name: sort })
+  //     .limit(limit)
+  //     .populate({
+  //       path: 'children',
+  //       populate: {
+  //         path: 'children',
+  //         populate: { path: 'children', populate: { path: 'children' } },
+  //       },
+  //     })
+  //     .lean<Category[]>(true);
+  // }
+
   async findAll(
     page: number,
     limit: number,
@@ -51,7 +72,9 @@ export class CategoryRepository {
     keyword: any,
   ) {
     return await this.model
-      .find(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {})
+      .find({
+        ...(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {}),
+      })
       .skip((page - 1) * limit)
       .sort({ name: sort })
       .limit(limit)

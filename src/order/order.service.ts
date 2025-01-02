@@ -5,6 +5,7 @@ import { CheckoutDto } from 'src/checkout/dto/checkout.dto';
 import { Order } from './model/order.schema';
 import { Types } from 'mongoose';
 import { ParamPaginationDto } from 'src/common/param-pagination.dto';
+import { StatusEnum } from './dto/status-enum';
 
 @Injectable()
 export class OrderService {
@@ -34,6 +35,7 @@ export class OrderService {
       product_cost: product_cost,
       shipping_cost: 30000,
       order_detail: [],
+      status: StatusEnum.PENDING,
     };
 
     const newOrderDetail = carts.map((item: any) => {
@@ -64,5 +66,9 @@ export class OrderService {
 
   findByCustomer(customer_id: string) {
     return this.orderRepository.findByCustomer(customer_id);
+  }
+
+  changeStatus(id: string, status: StatusEnum) {
+    return this.orderRepository.updateStatus(id, status);
   }
 }

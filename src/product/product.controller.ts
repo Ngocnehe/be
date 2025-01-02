@@ -42,8 +42,11 @@ export class ProductController {
   ) {}
 
   @Get('/c/:id')
-  async getProductByCategory(@Param('id') id: string) {
-    return this.productService.findByCategory(id);
+  async getProductByCategory(
+    @Param('id') id: string,
+    @Query('keyword') keyword: string,
+  ) {
+    return this.productService.findByCategory(id, keyword);
   }
 
   @UseGuards(JwtAuthGuard, RoleAuthGuard)

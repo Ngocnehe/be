@@ -147,19 +147,21 @@ export class ProductService {
     return product;
   }
 
-  async findByCategory(category_id: string) {
+  async findByCategory(category_id: string, keyword: string) {
     if (category_id === 'all') {
-      return await this.productRepository.findAll(1, 1000, 'asc', '');
+      return await this.productRepository.findAll(1, 1000, 'asc', keyword);
     }
     const category = await this.categoryRepository.findOne(category_id);
 
     let listProducts: Product[] = [];
-    const products = await this.productRepository.findByCategory({
+
+    const products = await this.productRepository.findByCategory(
       category_id,
-    });
+      keyword,
+    );
     listProducts.push(...products);
 
-    await this.hierarchical(listProducts, category, category_id);
+    await this.hierarchical(listProducts, category, category_id, keyword);
 
     return listProducts;
   }
@@ -168,15 +170,17 @@ export class ProductService {
     listProducts: Product[],
     category: any,
     category_id: string,
+    keyword: string,
   ) {
     if (category.children.length > 0) {
       for (const child of category.children) {
-        const products = await this.productRepository.findByCategory({
-          category_id: child._id,
-        });
+        const products = await this.productRepository.findByCategory(
+          child._id,
+          keyword,
+        );
         listProducts.push(...products);
 
-        await this.hierarchical(listProducts, child, category_id);
+        await this.hierarchical(listProducts, child, category_id, keyword);
       }
     }
   }

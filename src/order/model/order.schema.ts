@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, Types } from 'mongoose';
 import { OrderDetail } from 'src/order/model/order-detail.schema';
+import { StatusEnum } from '../dto/status-enum';
 
 @Schema({ versionKey: false })
 export class Order {
@@ -36,6 +37,9 @@ export class Order {
 
   @Prop({ type: Date, default: Date.now() })
   created_at?: Date;
+
+  @Prop({ type: String, default: '' })
+  status: StatusEnum;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

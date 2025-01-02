@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Put,
   Query,
   Request,
   UseGuards,
@@ -14,6 +15,7 @@ import { Role } from 'src/auth/decorator/role.enum';
 import { ParamPaginationDto } from 'src/common/param-pagination.dto';
 import { buildPagination } from 'src/common/common';
 import { Order } from './model/order.schema';
+import { StatusEnum } from './dto/status-enum';
 
 @Controller('orders')
 export class OrderController {
@@ -37,5 +39,10 @@ export class OrderController {
   @Get(':id')
   async getOne(@Param('id') id: string) {
     return await this.service.findOne(id);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Query('status') status: StatusEnum) {
+    return await this.service.changeStatus(id, status);
   }
 }

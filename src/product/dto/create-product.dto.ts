@@ -9,8 +9,8 @@ export class CreateProductDto {
 
   price: number;
 
-  //   @Max(100)
-  //   @Min(0)
+  // @Max(100)
+  // @Min(0)
   sale: number;
 
   stock: number;

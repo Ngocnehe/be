@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { Customer } from 'src/customer/model/customer.schema';
 import { Order } from 'src/order/model/order.schema';
+import { FeedbackDto } from './dto/feedback.dto';
 
 @Injectable()
 export class MailService {
@@ -9,12 +10,12 @@ export class MailService {
 
   async placeOrder(order: Order, customer: Customer) {
     await this.mailerService.sendMail({
-      to: order.email, // list of receivers
-      from: 'daothanhnghi9a4@gmail.com', // sender address
-      subject: 'Thanh toán hoá đơn thành công ✔', // Subject line
-      template: 'place-order', // plaintext body
+      to: order.email,
+      from: 'daothanhnghi9a4@gmail.com',
+      subject: 'Hóa đơn thanh toán',
+      template: 'place-order',
       context: {
-        orderId: order._id, // dữ liệu để truyền vào template
+        orderId: order._id,
         date: order.created_at,
         customer: {
           name: customer.name,
@@ -29,12 +30,27 @@ export class MailService {
 
   async forgotPassword(email: string, url: string) {
     await this.mailerService.sendMail({
-      to: email, // list of receivers
-      from: 'daothanhnghi9a4@gmail.com', // sender address
-      subject: 'Thay đổi mật khẩu của bạn', // Subject line
-      template: 'forgot-password', // plaintext body
+      to: email,
+      from: 'daothanhnghi9a4@gmail.com',
+      subject: 'Thay đổi mật khẩu của bạn',
+      template: 'forgot-password',
       context: {
         url: url,
+      },
+    });
+  }
+
+  async feedBack(feedback: FeedbackDto) {
+    await this.mailerService.sendMail({
+      to: 'daothanhnghi9a4@gmail.com',
+      from: feedback.email,
+      subject: 'Phản hồi khách hàng',
+      template: 'feedback',
+      context: {
+        email: feedback.email,
+        phone_number: feedback.phone_number,
+        name: feedback.name,
+        message: feedback.message,
       },
     });
   }

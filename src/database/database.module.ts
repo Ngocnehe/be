@@ -5,7 +5,7 @@ import { ModelDefinition, MongooseModule } from '@nestjs/mongoose';
   imports: [
     MongooseModule.forRootAsync({
       useFactory: async () => ({
-        uri: 'mongodb://localhost:27017/shopme',
+        uri: 'mongodb://localhost:27017/mangastore',
       }),
     }),
   ],

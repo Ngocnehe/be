@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './model/order.schema';
 import { OrderDetail } from './model/order-detail.schema';
+import { StatusEnum } from './dto/status-enum';
 
 @Injectable()
 export class OrderRepository {
@@ -74,7 +75,13 @@ export class OrderRepository {
   async getLastOptionDays(startDate: Date, endDate: Date) {
     return await this.orderModel
       .find({ created_at: { $gte: startDate, $lt: endDate } })
-      .sort({ created_at: 1 }) // Sắp xếp theo ngày giao hàng tăng dần
+      .sort({ created_at: 1 })
       .lean<Order[]>(true);
+  }
+
+  async updateStatus(id: string, status: StatusEnum) {
+    return await this.orderModel
+      .findOneAndUpdate({ _id: id }, { status }, { new: true })
+      .lean<Order>(true);
   }
 }

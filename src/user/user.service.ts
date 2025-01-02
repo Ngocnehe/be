@@ -78,8 +78,8 @@ export class UserService implements OnModuleInit {
   async onModuleInit(): Promise<void> {
     const createUserAdmin: CreateUserDto = {
       email: 'admin@gmail.com',
-      name: 'nghi',
-      password: '123456Nghi!',
+      name: 'admin',
+      password: 'Admin123!',
       status: true,
       role: [Role.ADMIN],
     };

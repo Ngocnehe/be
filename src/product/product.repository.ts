@@ -48,8 +48,12 @@ export class ProductRepository {
     sort: 'asc' | 'desc',
     keyword: any,
   ) {
+    const query = {
+      ...(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {}),
+    };
+
     return await this.model
-      .find(keyword ? { $or: [{ name: new RegExp(keyword, 'i') }] } : {})
+      .find(query)
       .skip((page - 1) * limit)
       .sort({ name: sort })
       .limit(limit)
@@ -78,8 +82,13 @@ export class ProductRepository {
       .lean<Product>(true);
   }
 
-  async findByCategory(filterQuery: FilterQuery<Product>) {
-    return await this.model.find(filterQuery).lean<Product[]>(true);
+  async findByCategory(category_id: string, keyword: string) {
+    const query = {
+      category_id,
+      $or: [{ name: new RegExp(keyword, 'i') }],
+      status: true,
+    };
+    return await this.model.find(query).lean<Product[]>(true);
   }
 
   async updateStatus(_id: string, status: boolean) {

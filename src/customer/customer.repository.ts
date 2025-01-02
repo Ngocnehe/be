@@ -15,6 +15,9 @@ export class CustomerRepository {
     return await this.model.create({
       _id: new Types.ObjectId(),
       ...customer,
+      image_url:
+        'https://res.cloudinary.com/dmsuwoosx/image/upload/v1732522105/avatar-trang-4_mnrdwk.jpg',
+      image_id: '1',
     });
   }
 
